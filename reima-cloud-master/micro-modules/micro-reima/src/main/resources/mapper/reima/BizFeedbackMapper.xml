@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizFeedbackMapper">
+    
+    <resultMap type="BizFeedback" id="BizFeedbackResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="content"    column="content"    />
+        <result property="urls"    column="urls"    />
+        <result property="memo"    column="memo"    />
+        <result property="procStatus"    column="proc_status"    />
+        <result property="procOpinion"    column="proc_opinion"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizFeedbackVo">
+        select id, user_id, content, urls, memo, proc_status, proc_opinion, del_flag, create_by, create_time, update_by, update_time from biz_feedback
+    </sql>
+
+    <select id="selectBizFeedbackList" parameterType="BizFeedback" resultMap="BizFeedbackResult">
+        <include refid="selectBizFeedbackVo"/> where del_flag = 0
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="urls != null  and urls != ''"> and urls = #{urls}</if>
+            <if test="memo != null  and memo != ''"> and memo = #{memo}</if>
+            <if test="procStatus != null  and procStatus != ''"> and proc_status = #{procStatus}</if>
+            <if test="procOpinion != null  and procOpinion != ''"> and proc_opinion = #{procOpinion}</if>
+    </select>
+    
+    <select id="selectBizFeedbackById" parameterType="Long" resultMap="BizFeedbackResult">
+        <include refid="selectBizFeedbackVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBizFeedback" parameterType="BizFeedback" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_feedback
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="content != null">content,</if>
+            <if test="urls != null">urls,</if>
+            <if test="memo != null">memo,</if>
+            <if test="procStatus != null">proc_status,</if>
+            <if test="procOpinion != null">proc_opinion,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="urls != null">#{urls},</if>
+            <if test="memo != null">#{memo},</if>
+            <if test="procStatus != null">#{procStatus},</if>
+            <if test="procOpinion != null">#{procOpinion},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizFeedback" parameterType="BizFeedback">
+        update biz_feedback
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="urls != null">urls = #{urls},</if>
+            <if test="memo != null">memo = #{memo},</if>
+            <if test="procStatus != null">proc_status = #{procStatus},</if>
+            <if test="procOpinion != null">proc_opinion = #{procOpinion},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizFeedbackById" parameterType="Long">
+        update biz_feedback set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizFeedbackByIds" parameterType="String">
+        update biz_feedback set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizUserAccRecordMapper">
+    
+    <resultMap type="BizUserAccRecord" id="BizUserAccRecordResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="amt"    column="amt"    />
+        <result property="status"    column="status"    />
+        <result property="memo"    column="memo"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizUserAccRecordVo">
+        select id, user_id, amt, status, memo, del_flag, create_by, create_time, update_by, update_time from biz_user_acc_record
+    </sql>
+
+    <select id="selectBizUserAccRecordList" parameterType="BizUserAccRecordVo" resultType="com.micro.reima.model.admin.BizUserAccRecordVo">
+      select a.id, a.user_id userId, a.amt, a.status, a.memo, a.create_time createTime,
+      b.phonenumber,b.nick_name nickName,b.avatar
+      from biz_user_acc_record a
+      left join sys_user b on a.user_id = b.user_id where a.del_flag = 0
+      <if test="userId != null "> and a.user_id = #{userId}</if>
+      <if test="amt != null "> and a.amt = #{amt}</if>
+      <if test="status != null  and status != ''"> and a.status = #{status}</if>
+      <if test="memo != null  and memo != ''"> and a.memo = #{memo}</if>
+      <if test="nickName != null  and nickName != ''"> and b.nick_name like concat('%', #{nickName}, '%')</if>
+      <if test="phonenumber != null  and phonenumber != ''"> and b.phonenumber like concat('%', #{phonenumber}, '%')</if>
+    </select>
+    
+    <select id="selectBizUserAccRecordById" parameterType="Long" resultType="com.micro.reima.model.admin.BizUserAccRecordVo">
+        <include refid="selectBizUserAccRecordVo"/>
+        where id = #{id}
+    </select>
+
+  <insert id="insertBizUserAccRecord" parameterType="BizUserAccRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_user_acc_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="amt != null">amt,</if>
+            <if test="status != null">status,</if>
+            <if test="memo != null">memo,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="amt != null">#{amt},</if>
+            <if test="status != null">#{status},</if>
+            <if test="memo != null">#{memo},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizUserAccRecord" parameterType="BizUserAccRecord">
+        update biz_user_acc_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="amt != null">amt = #{amt},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="memo != null">memo = #{memo},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+  <delete id="deleteBizUserAccRecordById" parameterType="Long">
+        update biz_user_acc_record set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizUserAccRecordByIds" parameterType="String">
+        update biz_user_acc_record set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUserAccRecordVoByUserId" resultType="com.micro.reima.model.vo.UserAccRecordVo">
+        select a.id,a.amt,a.status,a.memo,a.create_time createTime from biz_user_acc_record a
+        where a.del_flag = 0 and a.user_id = #{userId}
+        <if test="startTime != null and startTime != '' "> and date_format(a.create_time,'%Y-%m-%d') >= #{startTime} </if>
+        <if test="endTime != null and endTime != '' "> and date_format(a.create_time,'%Y-%m-%d') <![CDATA[<=]]> #{endTime} </if>
+        order by a.id desc
+    </select>
+
+    <select id="selectBizUserAccRecordListByUserIdAndMemo" resultMap="BizUserAccRecordResult">
+        <include refid="selectBizUserAccRecordVo"/> where del_flag = 0 and status = 0 and user_id = #{userId} and memo = #{memo}
+    </select>
+
+    <select id="sumUserAccByScene" resultType="java.lang.Integer">
+      select sum(amt) from biz_user_acc_record where user_id = #{userId} and memo = #{scene}
+    </select>
+  <select id="syscChangePoint" resultType="com.micro.reima.model.bo.ChangePointBo">
+    select
+      a.id,b.phonenumber,a.amt changePoint,a.memo,
+      (case when memo='积分兑换' then 'CONSUME' when memo = '完善信息' then 'INIT_POINT' else 'OTHER' end ) source
+    from biz_user_acc_record a
+           left join sys_user b on a.user_id = b.user_id
+    where length(b.phonenumber)>1 and a.amt != 0 and (a.update_time>a.sync_time or a.sync_time is null)
+  </select>
+
+  <update id="updateSyncTime">
+    update biz_user_acc_record set sync_time = now() where id = #{id}
+  </update>
+</mapper>

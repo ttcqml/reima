@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/micro-api/micro-api-system/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-api/micro-api-system/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-auth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-auth/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-datascope/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-datascope/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-datasource/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-datasource/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-log/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-log/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-redis/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-redis/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-security/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-security/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-swagger/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/micro-common-swagger/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-file/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-file/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-gen/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-gen/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-job/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-job/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-reima/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-reima/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-system/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/micro-system/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-modules/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-visual/micro-monitor/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-visual/micro-monitor/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-visual/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/micro-visual/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

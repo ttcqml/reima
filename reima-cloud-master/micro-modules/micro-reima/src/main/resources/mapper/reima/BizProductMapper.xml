@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizProductMapper">
+    
+    <resultMap type="BizProduct" id="BizProductResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="url"    column="url"    />
+        <result property="gallery"    column="gallery"    />
+        <result property="brief"    column="brief"    />
+        <result property="detail"    column="detail"    />
+        <result property="price"    column="price"    />
+        <result property="total"    column="total"    />
+        <result property="unit"    column="unit"    />
+        <result property="isOnSale"    column="is_on_sale"    />
+        <result property="dispIdx"    column="disp_idx"    />
+        <result property="way"    column="way"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizProductVo">
+        select id, name, url, gallery, brief, detail, price,total, unit, is_on_sale,way, disp_idx, del_flag, create_by, create_time, update_by, update_time from biz_product
+    </sql>
+
+    <select id="selectBizProductList" parameterType="BizProduct" resultMap="BizProductResult">
+        <include refid="selectBizProductVo"/> where del_flag = 0
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="gallery != null  and gallery != ''"> and gallery = #{gallery}</if>
+            <if test="brief != null  and brief != ''"> and brief = #{brief}</if>
+            <if test="detail != null  and detail != ''"> and detail = #{detail}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="isOnSale != null  and isOnSale != ''"> and is_on_sale = #{isOnSale}</if>
+            <if test="dispIdx != null "> and disp_idx = #{dispIdx}</if>
+    </select>
+    
+    <select id="selectBizProductById" parameterType="Long" resultMap="BizProductResult">
+        <include refid="selectBizProductVo"/>
+        where id = #{id}
+    </select>
+
+  <insert id="insertBizProduct" parameterType="BizProduct" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="url != null">url,</if>
+            <if test="gallery != null">gallery,</if>
+            <if test="brief != null">brief,</if>
+            <if test="detail != null">detail,</if>
+            <if test="price != null">price,</if>
+            <if test="total != null">total,</if>
+            <if test="unit != null">unit,</if>
+            <if test="isOnSale != null">is_on_sale,</if>
+            <if test="dispIdx != null">disp_idx,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="way != null and way != ''">way,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="url != null">#{url},</if>
+            <if test="gallery != null">#{gallery},</if>
+            <if test="brief != null">#{brief},</if>
+            <if test="detail != null">#{detail},</if>
+            <if test="price != null">#{price},</if>
+            <if test="total != null">#{total},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="isOnSale != null">#{isOnSale},</if>
+            <if test="dispIdx != null">#{dispIdx},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="way != null and way != ''">#{way},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizProduct" parameterType="BizProduct">
+        update biz_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="gallery != null">gallery = #{gallery},</if>
+            <if test="brief != null">brief = #{brief},</if>
+            <if test="detail != null">detail = #{detail},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="isOnSale != null">is_on_sale = #{isOnSale},</if>
+            <if test="dispIdx != null">disp_idx = #{dispIdx},</if>
+            <if test="way != null">way = #{way},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizProductById" parameterType="Long">
+        update biz_product set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizProductByIds" parameterType="String">
+        update biz_product set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="appList" resultType="com.micro.reima.model.vo.SimpleProductVo">
+        select id, name, url, brief, price, unit, way, total num from biz_product where del_flag = 0 and is_on_sale = 1 order by disp_idx asc
+    </select>
+</mapper>

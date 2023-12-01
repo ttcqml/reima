@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizShopInfoMapper">
+    
+    <resultMap type="BizShopInfo" id="BizShopInfoResult">
+        <result property="id"    column="id"    />
+        <result property="shopId"    column="shop_id"    />
+        <result property="platCode"    column="plat_code"    />
+        <result property="cardPlanId"    column="card_plan_id"    />
+        <result property="shopName"    column="shop_name"    />
+        <result property="accountId"    column="account_id"    />
+        <result property="address"    column="address"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
+        <result property="phone"    column="phone"    />
+        <result property="email"    column="email"    />
+        <result property="postcode"    column="postcode"    />
+        <result property="orgCode"    column="org_code"    />
+        <result property="orgName"    column="org_name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizShopInfoVo">
+        select id, shop_id, plat_code, card_plan_id, shop_name, account_id, address, telephone, province, city, county, phone, email, postcode, org_code, org_name, del_flag, create_by, create_time, update_by, update_time from biz_shop_info
+    </sql>
+
+    <select id="selectBizShopInfoList" parameterType="BizShopInfo" resultMap="BizShopInfoResult">
+        <include refid="selectBizShopInfoVo"/> where del_flag = 0
+            <if test="shopId != null  and shopId != ''"> and shop_id = #{shopId}</if>
+            <if test="platCode != null  and platCode != ''"> and plat_code = #{platCode}</if>
+            <if test="cardPlanId != null  and cardPlanId != ''"> and card_plan_id = #{cardPlanId}</if>
+            <if test="shopName != null  and shopName != ''"> and shop_name like concat('%', #{shopName}, '%')</if>
+            <if test="accountId != null  and accountId != ''"> and account_id = #{accountId}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="telephone != null  and telephone != ''"> and telephone = #{telephone}</if>
+            <if test="province != null  and province != ''"> and province = #{province}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="county != null  and county != ''"> and county = #{county}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="postcode != null  and postcode != ''"> and postcode = #{postcode}</if>
+            <if test="orgCode != null  and orgCode != ''"> and org_code = #{orgCode}</if>
+            <if test="orgName != null  and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
+    </select>
+    
+    <select id="selectBizShopInfoById" parameterType="Long" resultMap="BizShopInfoResult">
+        <include refid="selectBizShopInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizShopInfo" parameterType="BizShopInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_shop_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shopId != null">shop_id,</if>
+            <if test="platCode != null">plat_code,</if>
+            <if test="cardPlanId != null">card_plan_id,</if>
+            <if test="shopName != null">shop_name,</if>
+            <if test="accountId != null">account_id,</if>
+            <if test="address != null">address,</if>
+            <if test="telephone != null">telephone,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="county != null">county,</if>
+            <if test="phone != null">phone,</if>
+            <if test="email != null">email,</if>
+            <if test="postcode != null">postcode,</if>
+            <if test="orgCode != null">org_code,</if>
+            <if test="orgName != null">org_name,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shopId != null">#{shopId},</if>
+            <if test="platCode != null">#{platCode},</if>
+            <if test="cardPlanId != null">#{cardPlanId},</if>
+            <if test="shopName != null">#{shopName},</if>
+            <if test="accountId != null">#{accountId},</if>
+            <if test="address != null">#{address},</if>
+            <if test="telephone != null">#{telephone},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="county != null">#{county},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="email != null">#{email},</if>
+            <if test="postcode != null">#{postcode},</if>
+            <if test="orgCode != null">#{orgCode},</if>
+            <if test="orgName != null">#{orgName},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizShopInfo" parameterType="BizShopInfo">
+        update biz_shop_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shopId != null">shop_id = #{shopId},</if>
+            <if test="platCode != null">plat_code = #{platCode},</if>
+            <if test="cardPlanId != null">card_plan_id = #{cardPlanId},</if>
+            <if test="shopName != null">shop_name = #{shopName},</if>
+            <if test="accountId != null">account_id = #{accountId},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="telephone != null">telephone = #{telephone},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="county != null">county = #{county},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="postcode != null">postcode = #{postcode},</if>
+            <if test="orgCode != null">org_code = #{orgCode},</if>
+            <if test="orgName != null">org_name = #{orgName},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+  <delete id="deleteBizShopInfoById" parameterType="Long">
+        update biz_shop_info set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizShopInfoByIds" parameterType="String">
+        update biz_shop_info set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="syncBizShopInfo" resultMap="BizShopInfoResult">
+        <include refid="selectBizShopInfoVo"/>
+        where update_time > sync_time or sync_time is null
+    </select>
+    <update id="updateSyncTime">
+        update biz_shop_info set sync_time = now() where id = #{id}
+    </update>
+    <select id="selectBizShopInfoByShopId" resultType="java.lang.Long">
+        select id from biz_shop_info where shop_id = #{shopId} limit 1
+    </select>
+</mapper>

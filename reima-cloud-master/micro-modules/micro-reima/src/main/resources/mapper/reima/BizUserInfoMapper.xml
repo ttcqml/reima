@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizUserInfoMapper">
+    
+    <resultMap type="BizUserInfo" id="BizUserInfoResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="vip"    column="vip"    />
+        <result property="vipCode"    column="vip_code"    />
+        <result property="serialNum"    column="serial_num"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="childNum"    column="child_num"    />
+        <result property="provinceId"    column="province_id"    />
+        <result property="cityId"    column="city_id"    />
+        <result property="preferShopId"    column="prefer_shop_id"    />
+        <result property="inviteCode"    column="invite_code"    />
+        <result property="memo"    column="memo"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizUserInfoVo">
+        select id, user_id, vip, vip_code, serial_num, birthday, child_num, province_id, city_id, prefer_shop_id, invite_code, memo, del_flag, create_by, create_time, update_by, update_time from biz_user_info
+    </sql>
+
+    <select id="selectBizUserInfoList" parameterType="BizUserInfo" resultType="com.micro.reima.model.admin.BizUserInfoVo">
+        select a.id, a.user_id userId, a.vip, a.vip_code vipCode, a.serial_num serialNum, a.birthday, a.child_num childNum, a.province_id provinceId, a.city_id cityId, a.prefer_shop_id preferShopId, a.invite_code inviteCode, a.memo, a.del_flag delFlag, a.create_time createTime, a.update_time updateTime,
+        b.nick_name nickName,b.sex,b.phonenumber,b.avatar,b.status,c1.name province,c2.name city,b.create_by channel
+        from biz_user_info a left join sys_user b on a.user_id = b.user_id
+        left join biz_region c1 on a.province_id = c1.id
+        left join biz_region c2 on a.city_id = c2.id where b.user_type = '01' and length(b.phonenumber)>=1 and b.del_flag = 0
+        <if test="userId != null "> and a.user_id = #{userId}</if>
+        <if test="vip != null  and vip != ''"> and a.vip = #{vip}</if>
+        <if test="vipCode != null  and vipCode != ''"> and a.vip_code = #{vipCode}</if>
+        <if test="birthday != null "> and a.birthday = #{birthday}</if>
+        <if test="childNum != null "> and a.child_num = #{childNum}</if>
+        <if test="provinceId != null "> and a.province_id = #{provinceId}</if>
+        <if test="cityId != null "> and a.city_id = #{cityId}</if>
+        <if test="preferShopId != null "> and a.prefer_shop_id = #{preferShopId}</if>
+        <if test="inviteCode != null  and inviteCode != ''"> and a.invite_code = #{inviteCode}</if>
+        <if test="memo != null  and memo != ''"> and a.memo = #{memo}</if>
+    </select>
+    
+    <select id="selectBizUserInfoById" parameterType="Long" resultType="com.micro.reima.model.admin.BizUserInfoVo">
+        select a.id, a.user_id userId, a.vip, a.vip_code vipCode, a.serial_num serialNum, a.birthday, a.child_num childNum, a.province_id provinceId, a.city_id cityId, a.prefer_shop_id preferShopId, a.invite_code inviteCode, a.memo, a.del_flag delFlag, a.create_time createTime, a.update_time updateTime,
+        b.nick_name nickName,b.sex,b.phonenumber,b.avatar,b.status,c1.name province,c2.name city
+        from biz_user_info a left join sys_user b on a.user_id = b.user_id
+        left join biz_region c1 on a.province_id = c1.id
+        left join biz_region c2 on a.city_id = c2.id where b.user_type = '01' and b.del_flag = 0 and a.id = #{id}
+    </select>
+        
+    <insert id="insertBizUserInfo" parameterType="BizUserInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="vip != null">vip,</if>
+            <if test="vipCode != null">vip_code,</if>
+            <if test="serialNum != null">serial_num,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="childNum != null">child_num,</if>
+            <if test="provinceId != null">province_id,</if>
+            <if test="cityId != null">city_id,</if>
+            <if test="preferShopId != null">prefer_shop_id,</if>
+            <if test="inviteCode != null">invite_code,</if>
+            <if test="memo != null">memo,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="vip != null">#{vip},</if>
+            <if test="vipCode != null">#{vipCode},</if>
+            <if test="serialNum != null">#{serialNum},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="childNum != null">#{childNum},</if>
+            <if test="provinceId != null">#{provinceId},</if>
+            <if test="cityId != null">#{cityId},</if>
+            <if test="preferShopId != null">#{preferShopId},</if>
+            <if test="inviteCode != null">#{inviteCode},</if>
+            <if test="memo != null">#{memo},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizUserInfo" parameterType="BizUserInfo">
+        update biz_user_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="vip != null">vip = #{vip},</if>
+            <if test="vipCode != null">vip_code = #{vipCode},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="childNum != null">child_num = #{childNum},</if>
+            <if test="provinceId != null">province_id = #{provinceId},</if>
+            <if test="cityId != null">city_id = #{cityId},</if>
+            <if test="preferShopId != null">prefer_shop_id = #{preferShopId},</if>
+            <if test="inviteCode != null">invite_code = #{inviteCode},</if>
+            <if test="memo != null">memo = #{memo},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizUserInfoById" parameterType="Long">
+        update biz_user_info set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizUserInfoByIds" parameterType="String">
+        update biz_user_info set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectBizUserInfoByUserId" parameterType="Long" resultMap="BizUserInfoResult">
+        <include refid="selectBizUserInfoVo"/> where del_flag = 0 and user_id = #{userId}
+    </select>
+
+    <select id="checkBizUserInfo" resultMap="BizUserInfoResult">
+        select a.id, a.user_id, a.serial_num, a.vip, a.vip_code, a.vip_code_url, a.birthday, a.child_num, a.province_id, a.city_id, a.prefer_shop_id, a.invite_code, a.memo, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time from biz_user_info a
+        left join sys_user b on a.user_id = b.user_id
+        left join biz_old_user c on b.phonenumber = c.phonenumber
+        where length(b.phonenumber)>1 and c.id is null and date(b.create_time) = date(now())
+    </select>
+
+    <select id="checkBizUserInfo2" resultMap="BizUserInfoResult">
+        select a.id, a.user_id, a.serial_num, a.vip, a.vip_code, a.vip_code_url, a.birthday, a.child_num, a.province_id, a.city_id, a.prefer_shop_id, a.invite_code, a.memo, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time from biz_user_info a
+         left join sys_user b on a.user_id = b.user_id
+         left join biz_old_user c on b.phonenumber = c.phonenumber
+        where date(a.create_time) = date(now()) and length(b.phonenumber)>1 and c.id is null
+    </select>
+
+    <select id="selectUserInfoVoByUserId" parameterType="Long" resultType="com.micro.reima.model.vo.UserInfoVo">
+        select a.user_id userId,a.nick_name nickName,a.avatar,a.phonenumber,
+        (case when b.vip = 0 then '活力小玩家' when b.vip = 1 then '户外小行家' when b.vip = 2 then '探险小专家' else '数据赢家' end ) vipDesc,
+        b.vip_code vipCode,b.vip_code_url vipCodeUrl, b.serial_num serialNum,ifnull(c.balance,0) balance
+        from sys_user a
+        left join biz_user_info b on a.user_id = b.user_id
+        left join biz_user_acc c on a.user_id = c.user_id
+        where a.del_flag = 0 and a.user_id = #{userId}
+    </select>
+
+    <resultMap type="SysUserInfo" id="SysUserResult">
+        <id     property="userId"       column="user_id"      />
+        <result property="deptId"       column="dept_id"      />
+        <result property="userName"     column="user_name"    />
+        <result property="nickName"     column="nick_name"    />
+        <result property="userType"     column="user_type"    />
+        <result property="email"        column="email"        />
+        <result property="phonenumber"  column="phonenumber"  />
+        <result property="sex"          column="sex"          />
+        <result property="avatar"       column="avatar"       />
+        <result property="wxOpenid"    column="wx_openid"    />
+        <result property="status"       column="status"       />
+        <result property="delFlag"      column="del_flag"     />
+        <result property="loginIp"      column="login_ip"     />
+        <result property="loginDate"    column="login_date"   />
+        <result property="createBy"     column="create_by"    />
+        <result property="createTime"   column="create_time"  />
+        <result property="updateBy"     column="update_by"    />
+        <result property="updateTime"   column="update_time"  />
+        <result property="remark"       column="remark"       />
+    </resultMap>
+
+    <select id="selectSysUserByUserId" resultMap="SysUserResult">
+        select user_id, dept_id, user_name, nick_name, user_type, email, phonenumber, sex, avatar, wx_openid, status, del_flag, login_ip, login_date, create_by, create_time, update_by, update_time, remark from sys_user
+        where del_flag = 0 and user_id = #{userId} and user_type = '01'
+    </select>
+
+    <select id="getMemberinfobymobile" resultType="com.micro.reima.model.pos.MemberInfoVo">
+        select
+            a.phonenumber member_code,a.nick_name full_name,b.vip member_tier_code,a.status member_status_code,a.phonenumber mobile,a.sex gender,
+            (case when b.vip = 0 then '活力小玩家' when b.vip = 1 then '户外小行家' when b.vip = 2 then '探险小专家' else '数据赢家' end ) member_tier_name,
+            b.birthday birthday,a.create_time register_date,a.avatar head_img
+        from sys_user a
+        left join biz_user_info b on a.user_id = b.user_id
+        where a.user_type = '01' and a.del_flag = 0 and a.phonenumber = #{mobile} order by a.user_id desc limit 1
+    </select>
+    <select id="getValByParamCode" resultType="java.lang.String">
+        select config_value from sys_config where config_key = #{code} limit 1
+    </select>
+
+    <select id="selectUserIdByMobile" resultType="java.lang.Long">
+        select user_id from sys_user where phonenumber = #{mobile} and del_flag = '0' limit 1
+    </select>
+
+    <update id="updateSysUserByUserId">
+        update sys_user
+        <set>
+            <if test="nickName != null and nickName != ''">user_name = #{nickName},nick_name = #{nickName},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="createBy!=null and createBy != ''"> create_by = #{createBy},</if>
+            update_time = now()
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateUserSerialNum">
+        update biz_user_info set serial_num = #{serialNum},update_time = now() where user_id = #{userId}
+    </update>
+
+    <select id="selectUserWithoutSerialNum" resultType="com.micro.reima.model.bo.UserMobileBo">
+        select a.user_id userId,b.phonenumber mobile from biz_user_info a
+        left join sys_user b on a.user_id = b.user_id
+        where length(b.phonenumber)>1 and a.serial_num is null
+    </select>
+    <select id="selectBizUserInfoBySerialNum" resultMap="BizUserInfoResult">
+        <include refid="selectBizUserInfoVo"/>
+        where serial_num = #{serialNum} limit 1
+    </select>
+    <select id="selectInviteMobileBo" resultType="com.micro.reima.model.bo.InviteMobileBo">
+        select user_id userId,remark mobile from sys_user where remark like '1%' and remark!=phonenumber
+    </select>
+
+    <update id="updateInviteMobile">
+        update sys_user set remark = concat('-',remark) where user_id = #{userId}
+    </update>
+
+    <select id="syncUser" resultType="com.micro.reima.model.bo.BizUserInfoBo">
+        select a.user_id id,nick_name username,phonenumber,date_format(b.birthday,'%Y-%m-%d') birthday,b.child_num childNum,
+               (case when a.sex = 0 then 'M' else 'F' end) sex,
+               b.province_id provinceId,b.city_id cityId,date_format(b.create_time,'%Y-%m-%d %H:%i:%s') createTime
+        from sys_user a left join biz_user_info b on a.user_id = b.user_id
+        where a.user_type = '01' and length(a.phonenumber)>1 and (a.update_time>a.sync_time or a.sync_time is null)
+    </select>
+
+    <update id="updateUserSyncTime">
+        update sys_user set sync_time = now() where user_id = #{id}
+    </update>
+
+    <update id="updateVipCodeUrlByUserId">
+        update biz_user_info set vip_code_url = #{url} where user_id = #{userId}
+    </update>
+    <update id="updateMemberIdByUserId">
+        update sys_user set member_id = #{memberId}  where user_id = #{userId} and (member_id is null or member_id = '');
+    </update>
+
+    <select id="selectUserwithoutBarCodeUrl" resultType="com.micro.reima.model.bo.UserMobileBo">
+        select a.user_id userId,a.phonenumber mobile from sys_user a
+        left join biz_user_info b on a.user_id = b.user_id
+        where length(a.phonenumber)>1 and b.vip_code_url is null and a.user_type = '01'
+    </select>
+    <select id="checkBizUserChildBirthday" resultType="java.lang.Long">
+        select user_id from biz_user_child where month(birthday) = month(now())
+    </select>
+    <select id="duplicateCheck" resultType="java.lang.Integer">
+        select count(*) from biz_user_coupon where user_id = #{userId} and coupon_id = #{couponId} and date_format(start_time,'%Y-%m') = date_format(now(),'%Y-%m')
+    </select>
+    <select id="selectUserInfos" resultType="com.micro.reima.model.admin.UserInfo">
+        select user_id userId,phonenumber from sys_user where create_by = 'by system' and user_type = '01' and phonenumber is not null and length(phonenumber)>1
+    </select>
+    <select id="selectMobileByMemberCode" resultType="java.lang.String">
+        select phonenumber from tmp_user_code where member_code = #{memberCode} limit 1
+    </select>
+    <select id="selectMemberCodeByMobile" resultType="java.lang.String">
+        select member_code from tmp_user_code where phonenumber = #{mobile} limit 1
+    </select>
+    <select id="selectRefreshUserInfo" resultType="com.micro.reima.model.bo.RefreshUserIno">
+        select a.user_id userId,a.phonenumber,b.province,b.city from sys_user a
+        left join biz_user_info c on a.user_id = c.user_id
+        left join biz_old_user b on a.phonenumber = b.phonenumber
+        where length(c.province_id) is null and length(b.province)>1
+    </select>
+    <select id="selectSs22ActivityUserIds" resultType="java.lang.Long">
+        select user_id from sys_user where user_type = '01' and length(phonenumber)>1
+    </select>
+    <select id="checkAllBizUserInfo" resultMap="BizUserInfoResult">
+        select a.id, a.user_id, a.serial_num, a.vip, a.vip_code, a.vip_code_url, a.birthday, a.child_num, a.province_id, a.city_id, a.prefer_shop_id, a.invite_code, a.memo, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time from biz_user_info a
+        left join sys_user b on a.user_id = b.user_id
+        where length(b.phonenumber)>1 and a.create_time > date(now())
+    </select>
+    <select id="selectAllUserIdWithMobile" resultType="java.lang.Long">
+        select user_id from sys_user where length(phonenumber) > 1 and user_type = '01'
+    </select>
+    <select id="selectSimpleUserInfos" resultType="com.micro.reima.model.vo.SimpleUserInfo">
+        select user_id userId,phonenumber from sys_user where user_type = '01' and length(phonenumber)>1
+    </select>
+    <select id="syncUserWithoutMemberId" resultType="com.micro.reima.model.vo.SimpleUserInfo">
+        select user_id userId,phonenumber from sys_user where user_type = '01' and (member_id is null or member_id = '') and length(phonenumber) > 1
+    </select>
+</mapper>

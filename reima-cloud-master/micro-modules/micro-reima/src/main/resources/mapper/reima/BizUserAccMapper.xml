@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizUserAccMapper">
+
+    <update id="updateUserPoints">
+        update biz_user_acc set balance = #{points},update_time = now() where user_id = #{userId}
+    </update>
+
+    <resultMap type="BizUserAcc" id="BizUserAccResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="balance"    column="balance"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizUserAccVo">
+        select id, user_id, balance, del_flag, create_by, create_time, update_by, update_time from biz_user_acc
+    </sql>
+
+    <select id="selectBizUserAccList" parameterType="BizUserAccVo" resultType="com.micro.reima.model.admin.BizUserAccVo">
+        select a.id, a.user_id userId, a.balance, a.del_flag delFlag, a.create_by createBy, a.create_time createTime, a.update_by updateBy, a.update_time updateTime,
+        b.avatar,b.nick_name nickName,b.phonenumber
+        from biz_user_acc a
+        left join sys_user b on a.user_id = b.user_id where a.del_flag = 0
+        <if test="userId != null "> and a.user_id = #{userId}</if>
+        <if test="balance != null "> and a.balance = #{balance}</if>
+        <if test="nickName != null  and nickName != ''"> and b.nick_name like concat('%', #{nickName}, '%')</if>
+        <if test="phonenumber != null  and phonenumber != ''"> and b.phonenumber like concat('%', #{phonenumber}, '%')</if>
+    </select>
+    
+    <select id="selectBizUserAccById" parameterType="Long" resultType="com.micro.reima.model.admin.BizUserAccVo">
+        select a.id, a.user_id userId, a.balance, a.del_flag delFlag, a.create_by createBy, a.create_time createTime, a.update_by updateBy, a.update_time updateTime
+        from biz_user_acc a
+        left join sys_user b on a.user_id = b.user_id
+        where a.id = #{id}
+    </select>
+        
+    <insert id="insertBizUserAcc" parameterType="BizUserAcc" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_user_acc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="balance != null">balance,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizUserAcc" parameterType="BizUserAcc">
+        update biz_user_acc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+  <delete id="deleteBizUserAccById" parameterType="Long">
+        update biz_user_acc set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizUserAccByIds" parameterType="String">
+        update biz_user_acc set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectBizUserAccByUserId" parameterType="Long" resultMap="BizUserAccResult">
+        <include refid="selectBizUserAccVo"/> where del_flag = 0 and user_id = #{userId} limit 1
+    </select>
+
+    <select id="checkBizUserAcc" resultType="Long">
+        select a.user_id from sys_user a
+        left join biz_user_acc b on a.user_id = b.user_id
+        where a.user_type = '01' and a.del_flag = '0' and b.id is null
+    </select>
+</mapper>

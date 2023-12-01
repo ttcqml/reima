@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizSpuMapper">
+    <!-- CUSTOM -->
+    <select id="selectByGoodCode" resultType="java.lang.Long">
+        select id from biz_spu where good_code = #{goodCode} limit 1
+    </select>
+    <select id="syncProductBos" resultType="com.micro.reima.model.bo.ProductBo">
+        select
+        a.id,'2001' shopId,a.good_code productId,a.good_name productName,a.standard_price price,b.skucode skuId,b.standard_price skuPrice
+        from biz_spu a left join biz_sku b on a.good_code = b.good_code
+        where (a.update_time > a.sync_time or b.sync_time is null) and b.standard_price > 0
+    </select>
+    <select id="syncProductByGoodCode" resultType="com.micro.reima.model.bo.ProductBo">
+        select
+            a.id,a.good_code productId,a.good_name productName,a.standard_price price,b.skucode skuId,b.standard_price skuPrice
+        from biz_spu a left join biz_sku b on a.good_code = b.good_code
+        where b.skucode = #{goodCode}
+    </select>
+    <update id="updateSyncTime">
+        update biz_spu set sync_time = now() where id = #{id}
+    </update>
+    <!-- MBG -->
+    <resultMap type="com.micro.reima.domain.BizSpu" id="BizSpuResult">
+        <result property="id"    column="id"    />
+        <result property="goodCode"    column="good_code"    />
+        <result property="goodName"    column="good_name"    />
+        <result property="goodShortName"    column="good_short_name"    />
+        <result property="goodAliasesName"    column="good_aliases_name"    />
+        <result property="status"    column="status"    />
+        <result property="standardPrice"    column="standard_price"    />
+        <result property="lastchanged"    column="lastchanged"    />
+        <result property="unitCode"    column="unit_code"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="brandCode"    column="brand_code"    />
+        <result property="categoryCode"    column="category_code"    />
+        <result property="seaconCode"    column="seacon_code"    />
+        <result property="yearCode"    column="year_code"    />
+        <result property="bandCode"    column="band_code"    />
+        <result property="seriesCode"    column="series_code"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizSpuVo">
+        select id, good_code, good_name, good_short_name, good_aliases_name, status, standard_price, lastchanged, unit_code, unit_name, brand_code, category_code, seacon_code, year_code, band_code, series_code, del_flag, create_by, create_time, update_by, update_time from biz_spu
+    </sql>
+
+    <select id="selectBizSpuList" parameterType="com.micro.reima.domain.BizSpu" resultMap="BizSpuResult">
+        <include refid="selectBizSpuVo"/> where del_flag = 0
+        <if test="goodCode != null  and goodCode != ''"> and good_code = #{goodCode}</if>
+        <if test="goodName != null  and goodName != ''"> and good_name like concat('%', #{goodName}, '%')</if>
+        <if test="goodShortName != null  and goodShortName != ''"> and good_short_name like concat('%', #{goodShortName}, '%')</if>
+        <if test="goodAliasesName != null  and goodAliasesName != ''"> and good_aliases_name like concat('%', #{goodAliasesName}, '%')</if>
+        <if test="status != null "> and status = #{status}</if>
+        <if test="standardPrice != null  and standardPrice != ''"> and standard_price = #{standardPrice}</if>
+        <if test="lastchanged != null "> and lastchanged = #{lastchanged}</if>
+        <if test="unitCode != null  and unitCode != ''"> and unit_code = #{unitCode}</if>
+        <if test="unitName != null  and unitName != ''"> and unit_name like concat('%', #{unitName}, '%')</if>
+        <if test="brandCode != null  and brandCode != ''"> and brand_code = #{brandCode}</if>
+        <if test="categoryCode != null  and categoryCode != ''"> and category_code = #{categoryCode}</if>
+        <if test="seaconCode != null  and seaconCode != ''"> and seacon_code = #{seaconCode}</if>
+        <if test="yearCode != null  and yearCode != ''"> and year_code = #{yearCode}</if>
+        <if test="bandCode != null  and bandCode != ''"> and band_code = #{bandCode}</if>
+        <if test="seriesCode != null  and seriesCode != ''"> and series_code = #{seriesCode}</if>
+    </select>
+
+    <select id="selectBizSpuById" parameterType="Long" resultMap="BizSpuResult">
+        <include refid="selectBizSpuVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizSpu" parameterType="com.micro.reima.domain.BizSpu" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_spu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodCode != null">good_code,</if>
+            <if test="goodName != null">good_name,</if>
+            <if test="goodShortName != null">good_short_name,</if>
+            <if test="goodAliasesName != null">good_aliases_name,</if>
+            <if test="status != null">status,</if>
+            <if test="standardPrice != null">standard_price,</if>
+            <if test="lastchanged != null">lastchanged,</if>
+            <if test="unitCode != null">unit_code,</if>
+            <if test="unitName != null">unit_name,</if>
+            <if test="brandCode != null">brand_code,</if>
+            <if test="categoryCode != null">category_code,</if>
+            <if test="seaconCode != null">seacon_code,</if>
+            <if test="yearCode != null">year_code,</if>
+            <if test="bandCode != null">band_code,</if>
+            <if test="seriesCode != null">series_code,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodCode != null">#{goodCode},</if>
+            <if test="goodName != null">#{goodName},</if>
+            <if test="goodShortName != null">#{goodShortName},</if>
+            <if test="goodAliasesName != null">#{goodAliasesName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="standardPrice != null">#{standardPrice},</if>
+            <if test="lastchanged != null">#{lastchanged},</if>
+            <if test="unitCode != null">#{unitCode},</if>
+            <if test="unitName != null">#{unitName},</if>
+            <if test="brandCode != null">#{brandCode},</if>
+            <if test="categoryCode != null">#{categoryCode},</if>
+            <if test="seaconCode != null">#{seaconCode},</if>
+            <if test="yearCode != null">#{yearCode},</if>
+            <if test="bandCode != null">#{bandCode},</if>
+            <if test="seriesCode != null">#{seriesCode},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBizSpu" parameterType="com.micro.reima.domain.BizSpu">
+        update biz_spu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodCode != null">good_code = #{goodCode},</if>
+            <if test="goodName != null">good_name = #{goodName},</if>
+            <if test="goodShortName != null">good_short_name = #{goodShortName},</if>
+            <if test="goodAliasesName != null">good_aliases_name = #{goodAliasesName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="standardPrice != null">standard_price = #{standardPrice},</if>
+            <if test="lastchanged != null">lastchanged = #{lastchanged},</if>
+            <if test="unitCode != null">unit_code = #{unitCode},</if>
+            <if test="unitName != null">unit_name = #{unitName},</if>
+            <if test="brandCode != null">brand_code = #{brandCode},</if>
+            <if test="categoryCode != null">category_code = #{categoryCode},</if>
+            <if test="seaconCode != null">seacon_code = #{seaconCode},</if>
+            <if test="yearCode != null">year_code = #{yearCode},</if>
+            <if test="bandCode != null">band_code = #{bandCode},</if>
+            <if test="seriesCode != null">series_code = #{seriesCode},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizSpuById" parameterType="Long">
+        update biz_spu set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizSpuByIds" parameterType="String">
+        update biz_spu set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizOrderDetailMapper">
+    <select id="syncTradeOrderChild" resultType="com.micro.reima.model.bo.TradeOrderChildBo">
+        select concat(bor.invoice_no,b.good_code) orderItemId,a.prd_code productId,c.good_name productName,abs(a.num) productNum,ifnull(a.unit_price,a.real_price) price,a.discount discountFee from biz_order_detail a
+        left join biz_order_record bor on a.order_id = bor.id
+        left join biz_sku b on a.prd_code = b.skucode
+        left join biz_spu c on b.good_code = c.good_code
+        where ifnull(a.unit_price,a.real_price)>0 and a.order_id = #{orderId}
+    </select>
+    <update id="updateSyncTime">
+        update biz_order_detail set sync_time = now() where order_id = #{orderId}
+    </update>
+    <select id="selectByOrderId" resultType="com.micro.reima.model.vo.OrderPrdVo">
+        select c.good_name prdName,a.num from biz_order_detail a
+        left join biz_sku b on a.prd_code = b.skucode
+        left join biz_spu c on b.good_code = c.good_code
+        where a.order_id = #{orderId}
+    </select>
+    <resultMap type="BizOrderDetail" id="BizOrderDetailResult">
+        <result property="id"    column="id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="url"    column="url"    />
+        <result property="prdName"    column="prd_name"    />
+        <result property="prdCode"    column="prd_code"    />
+        <result property="prdSpec"    column="prd_spec"    />
+        <result property="num"    column="num"    />
+        <result property="discount"    column="discount"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="realPrice"    column="real_price"    />
+        <result property="employeeCode"    column="employee_code"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizOrderDetailVo">
+        select id, order_id, url, prd_name, prd_code, prd_spec, num, discount, unit_price, real_price, employee_code, del_flag, create_by, create_time, update_by, update_time from biz_order_detail
+    </sql>
+
+    <select id="selectBizOrderDetailList" parameterType="BizOrderDetail" resultMap="BizOrderDetailResult">
+        <include refid="selectBizOrderDetailVo"/> where del_flag = 0
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="prdName != null  and prdName != ''"> and prd_name like concat('%', #{prdName}, '%')</if>
+            <if test="prdCode != null  and prdCode != ''"> and prd_code = #{prdCode}</if>
+            <if test="prdSpec != null  and prdSpec != ''"> and prd_spec = #{prdSpec}</if>
+            <if test="num != null "> and num = #{num}</if>
+            <if test="discount != null "> and discount = #{discount}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="realPrice != null "> and real_price = #{realPrice}</if>
+            <if test="employeeCode != null  and employeeCode != ''"> and employee_code = #{employeeCode}</if>
+    </select>
+    
+    <select id="selectBizOrderDetailById" parameterType="Long" resultMap="BizOrderDetailResult">
+        <include refid="selectBizOrderDetailVo"/>
+        where id = #{id}
+    </select>
+
+  <insert id="insertBizOrderDetail" parameterType="BizOrderDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_order_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="url != null">url,</if>
+            <if test="prdName != null">prd_name,</if>
+            <if test="prdCode != null">prd_code,</if>
+            <if test="prdSpec != null">prd_spec,</if>
+            <if test="num != null">num,</if>
+            <if test="discount != null">discount,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="realPrice != null">real_price,</if>
+            <if test="employeeCode != null">employee_code,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="url != null">#{url},</if>
+            <if test="prdName != null">#{prdName},</if>
+            <if test="prdCode != null">#{prdCode},</if>
+            <if test="prdSpec != null">#{prdSpec},</if>
+            <if test="num != null">#{num},</if>
+            <if test="discount != null">#{discount},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="realPrice != null">#{realPrice},</if>
+            <if test="employeeCode != null">#{employeeCode},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizOrderDetail" parameterType="BizOrderDetail">
+        update biz_order_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="prdName != null">prd_name = #{prdName},</if>
+            <if test="prdCode != null">prd_code = #{prdCode},</if>
+            <if test="prdSpec != null">prd_spec = #{prdSpec},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="realPrice != null">real_price = #{realPrice},</if>
+            <if test="employeeCode != null">employee_code = #{employeeCode},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizOrderDetailById" parameterType="Long">
+        update biz_order_detail set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizOrderDetailByIds" parameterType="String">
+        update biz_order_detail set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

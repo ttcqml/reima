@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="micro-modules-reima" />
+        <module name="micro-common-redis" />
+        <module name="micro-api-system" />
+        <module name="micro-common-swagger" />
+        <module name="micro-modules-gen" />
+        <module name="micro-common-log" />
+        <module name="micro-auth" />
+        <module name="micro-common-datasource" />
+        <module name="micro-modules-file" />
+        <module name="micro-common-datascope" />
+        <module name="micro-common-security" />
+        <module name="micro-common-core" />
+        <module name="micro-modules-system" />
+        <module name="micro-visual-monitor" />
+        <module name="micro-gateway" />
+        <module name="micro-modules-job" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>

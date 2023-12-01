@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizOrderRecordMapper">
+
+    <select id="syncTradeOrder" resultType="com.micro.reima.model.bo.TradeOrderBo">
+        select
+            a.id,a.invoice_no orderId,su.phonenumber platAccount,abs(a.num) productNum,'0' adjustFee, a.amt payment,a.shop_code shopId,
+            date_format(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,date_format(a.create_time,'%Y-%m-%d %H:%i:%s') created
+        from biz_order_record a
+        left join sys_user su on a.user_id = su.user_id
+        where a.del_flag = 0 and (a.update_time > a.sync_time or a.sync_time is null) and a.is_refund = 0 and length(su.phonenumber) > 1
+    </select>
+    <select id="syncRefundOrder" resultType="com.micro.reima.model.bo.RefundOrderBo">
+        select a.id,a.original_invoice_no orderId,concat(a.original_invoice_no,d.good_code) orderItemId,a.shop_code shopId,abs(a.amt) refundFee,
+               d.good_code productId,c.skucode skuId
+        from biz_order_record a
+        left join biz_order_detail b on b.order_id = a.id
+        left join biz_sku c on b.prd_code = c.skucode
+        left join biz_spu d on c.good_code = d.good_code
+        where a.del_flag = 0 and (a.update_time > a.sync_time or a.sync_time is null) and a.is_refund = 1
+    </select>
+
+    <update id="updateSyncTime">update biz_order_record set sync_time = now() where id = #{id}</update>
+
+    <resultMap type="BizOrderRecord" id="BizOrderRecordResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="invoiceNo"    column="invoice_no"    />
+        <result property="amt"    column="amt"    />
+        <result property="originalInvoiceNo"    column="original_invoice_no"    />
+        <result property="num"    column="num"    />
+        <result property="shopCode"    column="shop_code"    />
+        <result property="goodCode"    column="good_code"    />
+        <result property="shopName"    column="shop_name"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="employeeCode"    column="employee_code"    />
+        <result property="discount"    column="discount"    />
+        <result property="payType"    column="pay_type"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="isRefund"    column="is_refund"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizOrderRecordVo">
+        select id, user_id, invoice_no, amt, original_invoice_no, num, shop_code,good_code, shop_name, channel_code, employee_code, discount, pay_type, pay_time, is_refund, del_flag, create_by, create_time, update_by, update_time from biz_order_record
+    </sql>
+
+    <select id="selectBizOrderRecordList" parameterType="BizOrderRecordVo" resultType="com.micro.reima.model.admin.BizOrderRecordVo">
+        select a.id, a.user_id userId, a.invoice_no invoiceNo, a.amt, a.original_invoice_no originalInvoiceNo, a.num, a.shop_code shopCode, a.shop_name shopName, a.channel_code channelCode,
+        a.employee_code employeeCode, a.discount, a.pay_type payType, a.pay_time payTime, a.is_refund isRefund, a.create_time createTime,b.phonenumber,b.avatar,b.nick_name nickName
+        from biz_order_record a left join sys_user b on a.user_id = b.user_id where a.del_flag = 0
+        <if test="userId != null "> and a.user_id = #{userId}</if>
+        <if test="invoiceNo != null  and invoiceNo != ''"> and a.invoice_no = #{invoiceNo}</if>
+        <if test="amt != null "> and a.amt = #{amt}</if>
+        <if test="originalInvoiceNo != null  and originalInvoiceNo != ''"> and a.original_invoice_no = #{originalInvoiceNo}</if>
+        <if test="num != null "> and a.num = #{num}</if>
+        <if test="shopCode != null  and shopCode != ''"> and a.shop_code = #{shopCode}</if>
+        <if test="shopName != null  and shopName != ''"> and a.shop_name like concat('%', #{shopName}, '%')</if>
+        <if test="channelCode != null  and channelCode != ''"> and a.channel_code = #{channelCode}</if>
+        <if test="employeeCode != null  and employeeCode != ''"> and a.employee_code = #{employeeCode}</if>
+        <if test="discount != null "> and a.discount = #{discount}</if>
+        <if test="payType != null  and payType != ''"> and a.pay_type = #{payType}</if>
+        <if test="payTime != null "> and a.pay_time = #{payTime}</if>
+        <if test="isRefund != null  and isRefund != ''"> and a.is_refund = #{isRefund}</if>
+        <if test="nickName != null  and nickName != ''"> and b.nick_name like concat('%', #{nickName}, '%')</if>
+        <if test="phonenumber != null  and phonenumber != ''"> and b.phonenumber like concat('%', #{phonenumber}, '%')</if>
+    </select>
+
+    <select id="selectBizOrderRecordById" parameterType="Long" resultType="com.micro.reima.model.admin.BizOrderRecordVo">
+        select a.id, a.user_id userId, a.invoice_no invoiceNo, a.amt, a.original_invoice_no originalInvoiceNo, a.num, a.shop_code shopCode, a.shop_name shopName, a.channel_code channelCode,
+               a.employee_code employeeCode, a.discount, a.pay_type payType, a.pay_time payTime, a.is_refund isRefund, a.create_time createTime,b.phonenumber,b.avatar,b.nick_name nickName
+        from biz_order_record a left join sys_user b on a.user_id = b.user_id
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertBizOrderRecord" parameterType="BizOrderRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_order_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="invoiceNo != null">invoice_no,</if>
+            <if test="amt != null">amt,</if>
+            <if test="originalInvoiceNo != null">original_invoice_no,</if>
+            <if test="num != null">num,</if>
+            <if test="goodCode != null">good_code,</if>
+            <if test="shopCode != null">shop_code,</if>
+            <if test="shopName != null">shop_name,</if>
+            <if test="channelCode != null">channel_code,</if>
+            <if test="employeeCode != null">employee_code,</if>
+            <if test="discount != null">discount,</if>
+            <if test="payType != null">pay_type,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="isRefund != null and isRefund != ''">is_refund,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="invoiceNo != null">#{invoiceNo},</if>
+            <if test="amt != null">#{amt},</if>
+            <if test="originalInvoiceNo != null">#{originalInvoiceNo},</if>
+            <if test="num != null">#{num},</if>
+            <if test="goodCode != null">#{goodCode},</if>
+            <if test="shopCode != null">#{shopCode},</if>
+            <if test="shopName != null">#{shopName},</if>
+            <if test="channelCode != null">#{channelCode},</if>
+            <if test="employeeCode != null">#{employeeCode},</if>
+            <if test="discount != null">#{discount},</if>
+            <if test="payType != null">#{payType},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="isRefund != null and isRefund != ''">#{isRefund},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBizOrderRecord" parameterType="BizOrderRecord">
+        update biz_order_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="invoiceNo != null">invoice_no = #{invoiceNo},</if>
+            <if test="amt != null">amt = #{amt},</if>
+            <if test="originalInvoiceNo != null">original_invoice_no = #{originalInvoiceNo},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="goodCode != null">good_code = #{goodCode},</if>
+            <if test="shopCode != null">shop_code = #{shopCode},</if>
+            <if test="shopName != null">shop_name = #{shopName},</if>
+            <if test="channelCode != null">channel_code = #{channelCode},</if>
+            <if test="employeeCode != null">employee_code = #{employeeCode},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="payType != null">pay_type = #{payType},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="isRefund != null and isRefund != ''">is_refund = #{isRefund},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizOrderRecordById" parameterType="Long">
+        update biz_order_record set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizOrderRecordByIds" parameterType="String">
+        update biz_order_record set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUserOrderRecordVoByUserId" resultType="com.micro.reima.model.vo.UserOrderRecordVo">
+        select a.id, a.amt, c.shop_name shopName, a.create_time createTime from biz_order_record a
+        left join biz_shop_info c on a.shop_code = c.shop_id
+        where a.del_flag = 0 and a.user_id = #{userId}
+        <if test="startTime != null and startTime != ''"> and date_format(a.create_time,'%Y-%m-%d') >= #{startTime} </if>
+        <if test="endTime != null and endTime != ''"> and date_format(a.create_time,'%Y-%m-%d') <![CDATA[<=]]> #{endTime} </if>
+        order by id desc
+    </select>
+
+    <select id="selectByInvoiceNo" resultType="java.lang.Long">
+        select id from biz_order_record where invoice_no = #{invoiceNo} and del_flag = 0 and is_refund = 0;
+    </select>
+
+    <update id="refund">
+        update biz_order_record set is_refund = 1 where original_invoice_no = #{originalInvoiceNo}
+    </update>
+</mapper>

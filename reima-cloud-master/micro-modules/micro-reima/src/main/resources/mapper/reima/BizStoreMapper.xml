@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizStoreMapper">
+    <!-- CUSTOM -->
+<!--    <select id="selectByAddr" resultMap="BizStoreResult">-->
+<!--        <include refid="selectBizStoreVo"/> where addr = #{addr} and del_flag = '0' limit 1-->
+<!--    </select>-->
+
+    <delete id="deleteByProductId">
+        update biz_store set del_flag = '2' where product_id = #{productId}
+    </delete>
+    <select id="selectStoreCityList" resultType="java.lang.String">
+        select distinct city from biz_store where del_flag = '0' and product_id = #{productId}
+    </select>
+
+    <!-- MBG -->
+    <resultMap type="com.micro.reima.domain.BizStore" id="BizStoreResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="city"    column="city"    />
+        <result property="name"    column="name"    />
+        <result property="addr"    column="addr"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizStoreVo">
+        select id, product_id, city, name, addr, del_flag, create_by, create_time, update_by, update_time from biz_store
+    </sql>
+
+    <select id="selectBizStoreList" parameterType="com.micro.reima.domain.BizStore" resultMap="BizStoreResult">
+        <include refid="selectBizStoreVo"/> where del_flag = 0
+        <if test="productId != null "> and product_id = #{productId}</if>
+        <if test="city != null  and city != ''"> and city = #{city}</if>
+        <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        <if test="addr != null  and addr != ''"> and addr = #{addr}</if>
+    </select>
+
+    <select id="selectBizStoreById" parameterType="Long" resultMap="BizStoreResult">
+        <include refid="selectBizStoreVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizStore" parameterType="com.micro.reima.domain.BizStore" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_store
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="city != null">city,</if>
+            <if test="name != null">name,</if>
+            <if test="addr != null">addr,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="city != null">#{city},</if>
+            <if test="name != null">#{name},</if>
+            <if test="addr != null">#{addr},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBizStore" parameterType="com.micro.reima.domain.BizStore">
+        update biz_store
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="addr != null">addr = #{addr},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizStoreById" parameterType="Long">
+        update biz_store set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizStoreByIds" parameterType="String">
+        update biz_store set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizUserAddressMapper">
+    
+    <resultMap type="BizUserAddress" id="BizUserAddressResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="tel"    column="tel"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="area"    column="area"    />
+        <result property="address"    column="address"    />
+        <result property="postalCode"    column="postal_code"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="com.micro.reima.model.vo.BizUserAddressVo" id="BizUserAddressResultPlus">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="nickName"    column="nickName"    />
+        <result property="phonenumber"    column="phonenumber"    />
+        <result property="name"    column="name"    />
+        <result property="tel"    column="tel"    />
+        <result property="province"    column="province"    />
+        <result property="proName"    column="proName"    />
+        <result property="city"    column="city"    />
+        <result property="cityName"    column="cityName"    />
+        <result property="area"    column="area"    />
+        <result property="areaName"    column="areaName"    />
+        <result property="address"    column="address"    />
+        <result property="postalCode"    column="postal_code"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizUserAddressVo">
+        select id, user_id, name, tel, province, city, area, address, postal_code, is_default, del_flag, create_by, create_time, update_by, update_time from biz_user_address
+    </sql>
+
+    <sql id="selectBizUserAddressPlusVo">
+        select a.id, a.user_id, a.name, a.tel, a.province, a.city, a.area, a.address, a.postal_code, a.is_default, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time,
+        b.name proName,b.name cityName,d.name areaName,su.avatar,su.nick_name nickName,su.phonenumber
+        from biz_user_address a
+        left join sys_user su on a.user_id = su.user_id
+        left join biz_region b on a.province = b.id
+        left join biz_region c on a.city = c.id
+        left join biz_region d on a.area = d.id
+    </sql>
+
+    <select id="selectBizUserAddressList" parameterType="BizUserAddress" resultMap="BizUserAddressResultPlus">
+        <include refid="selectBizUserAddressPlusVo"/> where a.del_flag = 0
+            <if test="userId != null "> and a.user_id = #{userId}</if>
+            <if test="name != null  and name != ''"> and a.name like concat('%', #{name}, '%')</if>
+            <if test="tel != null  and tel != ''"> and a.tel like concat('%', #{tel}, '%')</if>
+            <if test="province != null "> and a.province = #{province}</if>
+            <if test="city != null "> and a.city = #{city}</if>
+            <if test="area != null "> and a.area = #{area}</if>
+            <if test="address != null  and address != ''"> and a.address = #{address}</if>
+            <if test="postalCode != null  and postalCode != ''"> and a.postal_code = #{postalCode}</if>
+            <if test="isDefault != null  and isDefault != ''"> and a.is_default = #{isDefault}</if>
+    </select>
+    
+    <select id="selectBizUserAddressById" parameterType="Long" resultMap="BizUserAddressResultPlus">
+        <include refid="selectBizUserAddressPlusVo"/>
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertBizUserAddress" parameterType="BizUserAddress" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_user_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="name != null">name,</if>
+            <if test="tel != null">tel,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="area != null">area,</if>
+            <if test="address != null">address,</if>
+            <if test="postalCode != null">postal_code,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="area != null">#{area},</if>
+            <if test="address != null">#{address},</if>
+            <if test="postalCode != null">#{postalCode},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizUserAddress" parameterType="BizUserAddress">
+        update biz_user_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="area != null">area = #{area},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="postalCode != null">postal_code = #{postalCode},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizUserAddressById" parameterType="Long">
+        update biz_user_address set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizUserAddressByIds" parameterType="String">
+        update biz_user_address set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSimpleUserAddressVoByUserId" resultType="com.micro.reima.model.vo.SimpleUserAddressVo">
+        select name, tel, province, city, area, address from biz_user_address where user_id = #{userId} and del_flag = 0 order by is_default desc,id desc limit 1
+    </select>
+
+    <select id="selectBizUserAddressByUserId" parameterType="Long" resultMap="BizUserAddressResult">
+        <include refid="selectBizUserAddressVo"/>
+        where user_id = #{userId} and del_flag = 0 order by is_default desc,id desc limit 1
+    </select>
+</mapper>

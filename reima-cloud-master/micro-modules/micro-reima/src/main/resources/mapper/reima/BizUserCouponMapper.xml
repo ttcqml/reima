@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizUserCouponMapper">
+    
+    <resultMap type="BizUserCoupon" id="BizUserCouponResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="couponId"    column="coupon_id"    />
+        <result property="verificationCode"    column="verification_code"    />
+        <result property="status"    column="status"    />
+        <result property="usedTime"    column="used_time"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizUserCouponVo">
+        select id, user_id, coupon_id, verification_code, status, used_time, start_time, end_time, del_flag, create_by, create_time, update_by, update_time from biz_user_coupon
+    </sql>
+
+    <select id="selectBizUserCouponList" parameterType="BizUserCouponVo" resultType="com.micro.reima.model.admin.BizUserCouponVo">
+        select a.id, a.user_id userId, a.coupon_id couponId, a.verification_code verificationCode , a.status, a.used_time usedTime, a.start_time startTime, a.end_time endTime, a.del_flag delFlag, a.create_by createBy, a.create_time createTime, a.update_by updateBy, a.update_time updateTime,
+        b.name,b.breif,b.tag,b.discount,b.min,c.nick_name nickName,c.phonenumber,c.avatar,
+        (case when a.create_by = 'sendBatch' then '管理员' when a.create_by = 'system' then '管理员' when a.create_by = 'exchange' then '用户' else '系统' end ) origin
+        from biz_user_coupon a left join biz_coupon b on a.coupon_id = b.id left join sys_user c on a.user_id = c.user_id where a.del_flag = 0
+        <if test="userId != null "> and a.user_id = #{userId}</if>
+        <if test="couponId != null "> and a.coupon_id = #{couponId}</if>
+        <if test="status != null "> and a.status = #{status}</if>
+        <if test="usedTime != null "> and a.used_time = #{usedTime}</if>
+        <if test="startTime != null "> and date_format(a.create_time,'%Y-%m-%d') >= date_format(#{startTime},'%Y-%m-%d')</if>
+        <if test="endTime != null "> and date_format(a.create_time,'%Y-%m-%d') <![CDATA[<=]]> date_format(#{endTime},'%Y-%m-%d')</if>
+        <if test="nickName != null  and nickName != ''"> and c.nick_name like concat('%', #{nickName}, '%')</if>
+        <if test="phonenumber != null  and phonenumber != ''"> and c.phonenumber like concat('%', #{phonenumber}, '%')</if>
+        order by a.id desc
+    </select>
+    
+    <select id="selectBizUserCouponById" parameterType="Long" resultType="com.micro.reima.model.admin.BizUserCouponVo">
+        select a.id, a.user_id, a.coupon_id, a.verification_code, a.status, a.used_time, a.start_time, a.end_time, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time,
+               b.name,b.breif,b.tag,b.discount,b.min,c.nick_name nickName,c.phonenumber,c.avatar
+        from biz_user_coupon a left join biz_coupon b on a.coupon_id = b.id left join sys_user c on a.user_id = c.user_id
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertBizUserCoupon" parameterType="BizUserCoupon" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_user_coupon
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="couponId != null">coupon_id,</if>
+            <if test="verificationCode != null">verification_code,</if>
+            <if test="status != null">status,</if>
+            <if test="usedTime != null">used_time,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="couponId != null">#{couponId},</if>
+            <if test="verificationCode != null">#{verificationCode},</if>
+            <if test="status != null">#{status},</if>
+            <if test="usedTime != null">#{usedTime},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizUserCoupon" parameterType="BizUserCoupon">
+        update biz_user_coupon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="couponId != null">coupon_id = #{couponId},</if>
+            <if test="verificationCode != null">verification_code = #{verificationCode},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="usedTime != null">used_time = #{usedTime},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="checkBizUserCoupon">
+        update biz_user_coupon set status = 2 where status = 0 and date_format(end_time,'%Y-%m-%d') <![CDATA[<]]> date_format(now(),'%Y-%m-%d')
+    </update>
+
+    <delete id="deleteBizUserCouponById" parameterType="Long">
+        update biz_user_coupon set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizUserCouponByIds" parameterType="String">
+        update biz_user_coupon set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="appList" resultType="com.micro.reima.model.vo.SimpleUserCouponVo">
+        select
+            a.id,a.coupon_id couponId,b.type,a.verification_code verificationCode,a.status,a.used_time usedTime,a.start_time startTime,a.end_time endTime,b.name,b.breif,b.tag,b.discount,b.min
+        from biz_user_coupon a
+                 left join biz_coupon b on a.coupon_id = b.id
+        where a.del_flag = 0 and a.user_id = #{userId}
+        <if test="status != null"> and a.status = #{status} </if>
+        order by a.create_time desc
+    </select>
+
+    <select id="queryMemberCouponList" resultType="com.micro.reima.model.pos.MemberCouponVo">
+        select
+        b.phonenumber member_code,c.name coupon_name,c.discount coupon_value,a.verification_code coupon_serial_no,
+        a.start_time effective_date,a.end_time expired_date,a.create_time create_date,a.used_time issue_date,a.id coupon_code,
+        (case when a.status = 0 then 1 when a.status = 1 then 2 when a.status = 2 then 3 when 3 then 0 end ) status,c.min,
+        (case when c.type = 0 then 'cash' else 'discount' end ) coupon_type_code
+        from biz_user_coupon a
+        left join biz_coupon c on a.coupon_id = c.id
+        left join sys_user b on a.user_id = b.user_id
+        where b.del_flag = 0 and b.user_type = '01' and a.status = 0 and b.phonenumber = #{mobile}
+        <if test="from != null and from != ''">and date_format(a.create_time,'%Y-%m-%d %H:%i:%s') >= #{from}</if>
+        <if test="to != null and to != ''"> and date_format(a.create_time,'%Y-%m-%d %H:%i:%s') <![CDATA[<=]]> #{to}</if>
+        order by a.id desc
+    </select>
+
+    <select id="getCoupon" resultType="com.micro.reima.model.pos.MemberCouponVo">
+        select
+            b.phonenumber member_code,c.name coupon_name,c.discount coupon_value,a.verification_code coupon_serial_no,
+            a.start_time effective_date,a.end_time expired_date,a.create_time create_date,a.used_time issue_date,a.id coupon_code,
+            (case when c.type = 0 then 'cash' else 'discount' end ) coupon_type_code,
+            (case when a.status = 0 then 1 when a.status = 1 then 2 when a.status = 2 then 3 when 3 then 0 end ) status,c.min
+        from biz_user_coupon a
+        left join biz_coupon c on a.coupon_id = c.id
+        left join sys_user b on a.user_id = b.user_id
+        where b.del_flag = 0 and b.user_type = '01' and a.verification_code = #{verificationCode} limit 1
+    </select>
+
+    <select id="checkMemberCoupon" resultType="com.micro.reima.model.pos.CheckMemberCouponVo">
+        select
+            (case when a.status = 0 then 1 when a.status = 1 then 2 when a.status = 2 then 3 when 3 then 0 end ) status
+        from biz_user_coupon a
+        left join sys_user b on a.user_id = b.user_id
+        where b.del_flag = 0 and b.user_type = '01' and b.phonenumber = #{mobile} and a.verification_code = #{verificationCode} limit 1
+    </select>
+
+    <select id="selectByMobileAndVerificationCode" resultMap="BizUserCouponResult">
+        select a.id, a.user_id, a.coupon_id, a.verification_code, a.status, a.used_time, a.start_time, a.end_time, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time from biz_user_coupon a
+        left join sys_user b on a.user_id = b.user_id
+        where b.phonenumber = #{mobile} and a.verification_code = #{verificationCode} and a.del_flag = 0
+    </select>
+
+
+    <select id="selectByVerificationCode" resultMap="BizUserCouponResult">
+        <include refid="selectBizUserCouponVo"/> where verification_code = #{verificationCode} limit 1
+    </select>
+
+    <select id="selectBizUserCouponByUserIdAndCouponId" resultMap="BizUserCouponResult">
+        <include refid="selectBizUserCouponVo"/> where user_id = #{userId} and coupon_id = #{couponId}
+    </select>
+    <select id="countByCouponIdToday" resultType="java.lang.Integer">
+        select ifnull(count(*),0) from biz_user_coupon where coupon_id = #{couponId} and status != 2 and date(create_time) = date(now())
+    </select>
+    <select id="countByCouponIdMonth" resultType="java.lang.Integer">
+        select ifnull(count(*),0) from biz_user_coupon where coupon_id = 8 and date_format(start_time,'%Y-%m') = date_format(now(),'%Y-%m')
+    </select>
+    <select id="checkIsNew" resultType="java.lang.Integer">
+        select ifnull(count(*),0) from biz_user_coupon where user_id = #{userId} and del_flag = '0' and status = '0' and is_new = '1'
+    </select>
+    <update id="resetIsNew">
+        update biz_user_coupon set is_new = '0' where user_id = #{userId}
+    </update>
+    <select id="selectBizUserCouponNoticeVos" resultType="com.micro.reima.model.bo.BizUserCouponNoticeVo">
+        select b.wx_openid openId,c.name couponName,date_format(a.end_time,'%Y-%m-%d %H:%i:%s') endAt from biz_user_coupon a
+        left join sys_user b on a.user_id = b.user_id
+        left join biz_coupon c on a.coupon_id = c.id
+        where a.status = 0 and a.end_time > now() and a.end_time <![CDATA[<=]]> date_add(now(), interval 3 day)
+    </select>
+</mapper>

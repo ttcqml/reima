@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizRegionMapper">
+    
+    <resultMap type="BizRegion" id="BizRegionResult">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="code"    column="code"    />
+        <result property="isHot"    column="is_hot"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectBizRegionVo">
+        select id, pid, name, type, code, is_hot, del_flag, create_by, create_time from biz_region
+    </sql>
+
+    <select id="selectBizRegionList" parameterType="BizRegion" resultMap="BizRegionResult">
+        <include refid="selectBizRegionVo"/> where del_flag = 0
+            <if test="pid != null "> and pid = #{pid}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="code != null "> and code = #{code}</if>
+            <if test="isHot != null  and isHot != ''"> and is_hot = #{isHot}</if>
+    </select>
+    
+    <select id="selectBizRegionById" parameterType="Long" resultMap="BizRegionResult">
+        <include refid="selectBizRegionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizRegion" parameterType="BizRegion" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_region
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null">pid,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="type != null">type,</if>
+            <if test="code != null">code,</if>
+            <if test="isHot != null">is_hot,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null">#{pid},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="code != null">#{code},</if>
+            <if test="isHot != null">#{isHot},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizRegion" parameterType="BizRegion">
+        update biz_region
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pid != null">pid = #{pid},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="isHot != null">is_hot = #{isHot},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizRegionById" parameterType="Long">
+        update biz_region set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizRegionByIds" parameterType="String">
+        update biz_region set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="appList" resultType="com.micro.reima.model.vo.SimpleRegionVo">
+        select id,name from biz_region where del_flag = 0 and pid = #{pid}
+    </select>
+
+    <select id="selectRegionByIds" resultType="java.lang.String">
+        select group_concat(name) from biz_region where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by id asc
+    </select>
+    <select id="selectByProName" resultType="java.lang.Long">
+      select id from biz_region where type = 1 and name like concat(#{name},'%') limit 1
+    </select>
+    <select id="selectByCityName" resultType="java.lang.Long">
+      select id from biz_region where pid = #{pid} and name like concat(#{name},'%') limit 1
+    </select>
+    <select id="selectDefaultCityByPid" resultType="java.lang.Long">
+        select id from biz_region where pid = #{pid} order by id asc limit 1
+    </select>
+</mapper>

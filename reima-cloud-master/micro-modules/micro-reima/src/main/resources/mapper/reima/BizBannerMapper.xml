@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.reima.mapper.BizBannerMapper">
+    
+    <resultMap type="BizBanner" id="BizBannerResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="url"    column="url"    />
+        <result property="link"    column="link"    />
+        <result property="dispIdx"    column="disp_idx"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizBannerVo">
+        select id, title, url, link, disp_idx, del_flag, create_by, create_time, update_by, update_time from biz_banner
+    </sql>
+
+    <select id="selectBizBannerList" parameterType="BizBanner" resultMap="BizBannerResult">
+        <include refid="selectBizBannerVo"/> where del_flag = 0
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="link != null  and link != ''"> and link = #{link}</if>
+            <if test="dispIdx != null "> and disp_idx = #{dispIdx}</if>
+    </select>
+    
+    <select id="selectBizBannerById" parameterType="Long" resultMap="BizBannerResult">
+        <include refid="selectBizBannerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBizBanner" parameterType="BizBanner" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="url != null">url,</if>
+            <if test="link != null">link,</if>
+            <if test="dispIdx != null">disp_idx,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="url != null">#{url},</if>
+            <if test="link != null">#{link},</if>
+            <if test="dispIdx != null">#{dispIdx},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizBanner" parameterType="BizBanner">
+        update biz_banner
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="link != null">link = #{link},</if>
+            <if test="dispIdx != null">disp_idx = #{dispIdx},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizBannerById" parameterType="Long">
+        update biz_banner set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteBizBannerByIds" parameterType="String">
+        update biz_banner set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="appList" resultType="com.micro.reima.model.vo.SimpleBannerVo">
+        select id,title,url,link from biz_banner where del_flag = 0 order by disp_idx asc limit 5
+    </select>
+</mapper>
